@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Convey.CQRS.Queries.Dispatchers
 {
@@ -12,14 +13,35 @@ namespace Convey.CQRS.Queries.Dispatchers
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<TResult> QueryAsync<TResult>(IQuery<TResult> query)
+        public Task<TResult> QueryAsync<TResult>(IQuery<TResult> query)
         {
-            var handlerType = typeof(IQueryHandler<,>)
-                .MakeGenericType(query.GetType(), typeof(TResult));
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResult));
+                dynamic handler = scope.ServiceProvider.GetService(handlerType);
+                ValidateHandler(handler, query);
+                
+                return handler.HandleAsync((dynamic) query);
+            }
+        }
 
-            dynamic handler = _serviceProvider.GetService(handlerType);
+        public Task<TResult> QueryAsync<TQuery, TResult>(TQuery query) where TQuery : IQuery<TResult>
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var handler = scope.ServiceProvider.GetService<IQueryHandler<TQuery, TResult>>();
+                ValidateHandler(handler, query);
 
-            return await handler.HandleAsync((dynamic)query);
+                return handler.HandleAsync(query);
+            }
+        }
+
+        private static void ValidateHandler<T>(object handler, T query)
+        {
+            if (handler is null)
+            {
+                throw new InvalidOperationException($"Query handler for: '{query}' was not found.");
+            }
         }
     }
 }
