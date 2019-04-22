@@ -7,13 +7,18 @@ namespace Convey.CQRS.Queries
     {
         public static IConveyBuilder AddQueryHandlers(this IConveyBuilder builder)
         {
-            builder.Services.AddTransient<IQueryDispatcher, QueryDispatcher>();
             builder.Services.Scan(s =>
                 s.FromEntryAssembly()
                     .AddClasses(c => c.AssignableTo(typeof(IQueryHandler<,>)))
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
 
+            return builder;
+        }
+
+        public static IConveyBuilder AddInMemoryQueryDispatcher(this IConveyBuilder builder)
+        {
+            builder.Services.AddTransient<IQueryDispatcher, QueryDispatcher>();
             return builder;
         }
     }
