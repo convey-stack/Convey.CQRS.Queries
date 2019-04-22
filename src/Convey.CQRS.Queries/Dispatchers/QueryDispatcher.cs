@@ -25,7 +25,7 @@ namespace Convey.CQRS.Queries.Dispatchers
             }
         }
 
-        public Task<TResult> QueryAsync<TQuery, TResult>(TQuery query) where TQuery : IQuery<TResult>
+        public Task<TResult> QueryAsync<TQuery, TResult>(TQuery query) where TQuery : class, IQuery<TResult>
         {
             using (var scope = _serviceProvider.CreateScope())
             {
