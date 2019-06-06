@@ -1,3 +1,4 @@
+using System;
 using Convey.CQRS.Queries.Dispatchers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,7 +9,7 @@ namespace Convey.CQRS.Queries
         public static IConveyBuilder AddQueryHandlers(this IConveyBuilder builder)
         {
             builder.Services.Scan(s =>
-                s.FromEntryAssembly()
+                s.FromAssemblies(AppDomain.CurrentDomain.GetAssemblies())
                     .AddClasses(c => c.AssignableTo(typeof(IQueryHandler<,>)))
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
