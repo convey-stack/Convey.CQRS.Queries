@@ -3,6 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
+  <PropertyGroup>
+    <Description>Convey.CQRS.Queries</Description>
+    <Authors>DevMentors.io</Authors>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <AssemblyName>Convey.CQRS.Queries</AssemblyName>
+    <Title>Convey.CQRS.Queries</Title>
+    <PackageId>Convey.CQRS.Queries</PackageId>
+    <PackageTags>Convey.CQRS.Queries</PackageTags>
+  </PropertyGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <ProjectReference Include="..\..\..\Convey\src\Convey\Convey.csproj" />
