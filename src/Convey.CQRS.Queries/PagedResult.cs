@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 
 namespace Convey.CQRS.Queries
@@ -35,5 +37,8 @@ namespace Convey.CQRS.Queries
                 result.TotalPages, result.TotalResults);
 
         public static PagedResult<T> Empty => new PagedResult<T>();
+
+        public PagedResult<U> Map<U>(Func<T, U> map)
+            => PagedResult<U>.From(this, Items.Select(map));
     }
 }
