@@ -9,20 +9,15 @@ namespace Convey.CQRS.Queries.Dispatchers
         private readonly IServiceProvider _serviceProvider;
 
         public QueryDispatcher(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-        }
+            => _serviceProvider = serviceProvider;
 
         public Task<TResult> QueryAsync<TResult>(IQuery<TResult> query)
         {
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                var handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResult));
-                dynamic handler = scope.ServiceProvider.GetService(handlerType);
-                ValidateHandler(handler, query);
+            var handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResult));
+            dynamic handler = _serviceProvider.GetService(handlerType);
+            ValidateHandler(handler, query);
                 
-                return handler.HandleAsync((dynamic) query);
-            }
+            return handler.HandleAsync((dynamic) query);
         }
 
         public Task<TResult> QueryAsync<TQuery, TResult>(TQuery query) where TQuery : class, IQuery<TResult>

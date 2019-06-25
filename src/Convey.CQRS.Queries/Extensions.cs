@@ -19,7 +19,7 @@ namespace Convey.CQRS.Queries
 
         public static IConveyBuilder AddInMemoryQueryDispatcher(this IConveyBuilder builder)
         {
-            builder.Services.AddTransient<IQueryDispatcher, QueryDispatcher>();
+            builder.Services.AddSingleton<IQueryDispatcher, QueryDispatcher>();
             return builder;
         }
     }
